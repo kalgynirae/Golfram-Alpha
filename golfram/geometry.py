@@ -15,32 +15,29 @@ class Circle:
 class Rectangle:
     """A simple two-dimensional rectangle"""
 
-    __slots__ = ('height', 'nw', 'se', 'width')
+    __slots__ = ('height', 'nw', 'width')
 
     def __init__(self, nw=None, se=None, width=None, height=None):
-        """Create a Rectangle
-
-        offset is a Vector describing the position of the rectangle's top left
-        corner relative to the origin.
-
-        """
         if width and height:
+            self.width = width
+            self.height = height
             if se and not nw:
-                self.se = se
-                self.nw = Vector(self.se.x - width, self.se.y - height)
+                self.nw = Vector(se.x - width, se.y - height)
             else:
                 if nw:
                     self.nw = nw
                 else:
                     self.nw = Vector(0, 0)
-                self.se = Vector(self.nw.x + width, self.nw.y + height)
         elif nw and se:
             self.nw = nw
-            self.se = se
-            self.width = self.se.x - self.nw.x
-            self.height = self.se.y - self.nw.y
+            self.width = se.x - nw.x
+            self.height = se.y - nw.y
         else:
             raise ValueError("Invalid argument combination")
+
+    @property
+    def se(self):
+        return Vector(self.nw.x + self.width, self.nw.y + self.height)
 
     def __repr__(self):
         return 'Rectangle({0!r}, {1!r})'.format(self.nw, self.se)
