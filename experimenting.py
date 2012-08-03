@@ -41,11 +41,11 @@ class RandomLevel(Level):
         self.ball.velocity = Vector(2, 1.1)
 
     def is_complete(self):
-        return self.ball.velocity.magnitude < 0.03
+        return self.ball.velocity.magnitude < 0.005
 
 # setup pygame window
 pygame.init()
-screen = pygame.display.set_mode((64 * 8, 64 * 8))
+screen = pygame.display.set_mode((64 * 4, 64 * 4))
 pygame.display.set_caption("Test stuFf")
 
 # Continuously generate test levels and shoot the ball across them
@@ -69,4 +69,5 @@ while True:
                 level.tick(dt=dt/n)
         except (IndexError, LevelComplete):
             break
+        level.center_view_on_entity(level.ball)
     del level, clock

@@ -65,27 +65,47 @@ class Level(object):
                                height=m(screen.get_height()*px))
         # Set up the level
         self.set_up()
+        # Calculate width and height
+        self.width = m(max([len(row) for row in self.tiles])*self.tilesize*px)
+        self.height = m(len(self.tiles)*self.tilesize*px)
 
     def add_entity(self, entity, physics=True):
         self._entities.append((entity, physics))
 
+    def center_view_on_entity(self, entity):
+        # Try to center the view on the entity
+        self._view.nw = Vector(entity.position.x - (self._view.width / 2),
+                               entity.position.y - (self._view.height / 2))
+        # But shift so there's no non-level space on the screen
+        if (self._view.nw.x + self._view.width) > self.width:
+            self._view.nw.x = self.width - self._view.width
+        if (self._view.nw.y + self._view.height) > self.height:
+            self._view.nw.y = self.height - self._view.height
+        if self._view.nw.x < 0:
+            self._view.nw.x = 0
+        if self._view.nw.y < 0:
+            self._view.nw.y = 0
+
     def draw(self, surface):
         # Draw all tiles for now. Later, only draw tiles from the _redraw_queue
         # Or, only draw tiles that are inside the _view rectangle
+        x_offset, y_offset = (px(self._view.nw.x*m),
+                              px(self._view.nw.y*m))
         for row, tiles in enumerate(self.tiles):
             for column, tile in enumerate(tiles):
-                destination = (column * self.tilesize, row * self.tilesize)
+                destination = (column * self.tilesize - x_offset,
+                               row * self.tilesize - y_offset)
                 surface.blit(self.tiles[row][column].texture, destination)
         # Draw all entities
         for entity, physics in self._entities:
-            surface.blit(entity.texture, (px(entity.position.x*m),
-                                          px(entity.position.y*m)))
+            surface.blit(entity.texture, (px(entity.position.x*m) - x_offset,
+                                          px(entity.position.y*m) - y_offset))
 
     def get_tile(self, row, column):
         """Return the tile at the given coordinates"""
         # Don't allow negative indices (which *are* valid for lists)
         if row < 0 or column < 0:
-            raise IndexError()
+            raise IndexError
         return self.tiles[row][column]
 
     def is_complete(self):
