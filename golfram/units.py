@@ -1,3 +1,5 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 class Unit:
     """Store conversion information for units of measure
 
