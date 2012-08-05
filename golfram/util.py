@@ -2,7 +2,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import os
 import sys
 
-import golfram.config
 
 def warn(message, **kwargs):
     """Print a message explaining a non-critical error

@@ -1,12 +1,13 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 import argparse
 import pickle
-from random import choice
+import random
+import sys
 
 import pygame
 
 import golfram.config
-from golfram.core import Level
+from golfram.level import Level
 from golfram.util import error, get_path, info
 
 # Some constants that should maybe eventually be relocated.
@@ -27,7 +28,8 @@ parser.add_argument('--bunny', action='store_true', dest='bunny')
 args = parser.parse_args()
 
 if not args.bunny and not args.levelset:
-    parser.print_usage()
+    parser.print_usage(file=sys.stderr)
+    sys.exit(1)
 
 # Print a bunny, if requested
 if args.bunny:
@@ -38,7 +40,7 @@ if args.bunny:
               "because the code in this area is hacked together and uses a " +
               "bare except clause that catches numerous types of errors.")
     else:
-        print(choice(bunnies))
+        print(random.choice(bunnies))
 
 # Load the specified levelset, if requested
 if args.levelset:
