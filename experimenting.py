@@ -4,6 +4,7 @@ import sys
 
 import pygame
 
+from golfram.logging import logger
 from golfram.ball import GolfBall
 from golfram.geometry import Vector
 from golfram.level import Level, LevelComplete
@@ -45,12 +46,14 @@ class RandomLevel(Level):
         return self.ball.velocity.magnitude < 0.005
 
 # setup pygame window
+logger.info("Initializing pygame")
 pygame.init()
 screen = pygame.display.set_mode((64 * 4, 64 * 4))
 pygame.display.set_caption("Test stuFf")
 
 # Continuously generate test levels and shoot the ball across them
 while True:
+    logger.info("Generating random level")
     level = RandomLevel(screen)
     clock = pygame.time.Clock()
     while True:
@@ -59,6 +62,7 @@ while True:
         pygame.display.flip()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                logger.info("Quitting")
                 pygame.quit()
                 sys.exit()
         # Move objects

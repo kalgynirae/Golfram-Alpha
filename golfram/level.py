@@ -30,7 +30,7 @@ import pygame
 from golfram.ball import GolfBall
 from golfram.geometry import Rectangle, Vector
 from golfram.units import m, px
-from golfram.util import get_path, info, warn
+from golfram.util import get_path
 
 class Level(object):
     """Base level class

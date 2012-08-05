@@ -2,50 +2,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import os
 import sys
 
-
-def warn(message, **kwargs):
-    """Print a message explaining a non-critical error
-
-    >>> warn("Blah!")
-    warn: Blah!
-    >>> warn("ignoring duplicate declaration", file='input.txt', line=42)
-    [input.txt:42] warn: ignoring duplicate declaration
-
-    """
-    _print_message(message, 'warn', **kwargs)
-
-def info(message, **kwargs):
-    """Print a message explaining normal operation
-
-    >>> info("everything works!")
-    info: everything works!
-
-    """
-    _print_message(message, 'info', **kwargs)
-
-def error(message, **kwargs):
-    """Print a message explaining a critical error
-
-    >>> error("can't open level: {}".format('level42.py'))
-    error: can't open level: level42.py
-
-    """
-    _print_message(message, 'error', **kwargs)
-
-def _print_message(message, message_type, output_file=None, line=None,
-                   file=None):
-    if file:
-        file = os.path.basename(file)
-    if line and file:
-        template = '[{file}:{line}] {type}: {message}'
-    elif file:
-        template = '[{file}] {type}: {message}'
-    else:
-        template = '{type}: {message}'
-    message = template.format(type=message_type, file=file,
-                              line=line, message=message)
-    print(message, file=output_file)
-
 def get_path(filename, filetype=None):
     """Return the absolute path to the file of the specified type.
 
