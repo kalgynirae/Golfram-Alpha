@@ -3,13 +3,15 @@ import ConfigParser
 import logging
 
 logger = logging.getLogger(__name__)
-_settings = {}
+_settings = None
 
 def load(filename):
+    global _settings
     logger.info("Loading config file {}".format(filename))
-    config = ConfigParser.RawConfigParser()
-    config.read(filename)
+    _settings = ConfigParser.RawConfigParser()
+    _settings.read(filename)
     #_settings['data_path'] = config.get('Settings', 'data_path')
 
 def get(setting_name):
-    return _settings[setting_name]
+    global _settings
+    return _settings.get('Settings', setting_name)

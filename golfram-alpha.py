@@ -11,11 +11,7 @@ import golfram.config
 from golfram.level import Level
 from golfram.util import get_path
 
-# Some constants that should maybe eventually be relocated.
-# Maybe to a Settings class.
-GOLFRAM_ALPHA = 'Golfram Alpha'
-VERSION = 'golfram-alpha-0.1'
-RESOLUTION = [640,480]
+VERSION = "golfram-alpha-0.1"
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(description="Play a nice game of minigolf.")
@@ -47,13 +43,14 @@ if args.bunny:
 if args.levelset:
     logger.info("Ignoring levelset {}; loading demo.lvl".format(args.levelset))
     # Create game object, load levels, whatever...
-    TEST_LEVEL = get_path('demo.lvl', filetype='level')
-    level = Level.load_file(TEST_LEVEL)
+    demo_level = get_path('demo.lvl', filetype='level')
+    level = Level.load_file(demo_level)
 
     # Set up a basic pygame window
     pygame.init()
-    screen = pygame.display.set_mode(RESOLUTION)
-    pygame.display.set_caption(GOLFRAM_ALPHA)
+    resolution = map(int, golfram.config.get('resolution').split('x'))
+    screen = pygame.display.set_mode(resolution)
+    pygame.display.set_caption(golfram.config.get('title'))
 
     # Draw the level
     level_surface = pygame.Surface(screen.get_size()).convert()
