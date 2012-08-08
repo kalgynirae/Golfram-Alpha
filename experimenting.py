@@ -53,7 +53,7 @@ pygame.display.set_caption("Test stuFf")
 
 # Continuously generate test levels and shoot the ball across them
 while True:
-    logger.info("Generating random level")
+    logger.debug("Generating random level")
     level = RandomLevel(screen)
     clock = pygame.time.Clock()
     while True:
