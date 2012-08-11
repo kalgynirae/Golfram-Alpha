@@ -1,50 +1,35 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import pygame
-from pygame.locals import *
 
-from Level import *
+from golfram.events import Scheduler
+from golfram.level import LevelComplete
 
-class Game:
-
-    def __init__(self, viewsize, level=None, players=[]):
+class LevelDemo(object):
+    def __init__(self, level, screen):
+        self.framerate = 60 # frames per second
         self.level = level
-        self.players = players
-        self.viewoffsetx = self.viewoffsety = 0
-        self.viewsize = viewsize
+        self.screen = screen
 
-    def load_level(self, levelname):
-        self.level = Level.load_file(levelname)
+    def run(self):
+        clock = pygame.time.Clock()
+        scheduler = Scheduler()
+        while True:
+            # Draw
+            self.level.draw(self.screen)
+            pygame.display.flip()
+            # Handle events
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    raise UserQuit
+            # Move objects
+            clock.tick(self.framerate)
+            scheduler.update()
+            try:
+                self.level.tick(1 / self.framerate, scheduler)
+            except (IndexError, LevelComplete):
+                break
+            self.level.center_view_on_entity(self.level.ball)
 
-    def add_player(self, ply):
-        self.players.append(ply)
-
-    def reset(self):
-        self.level = None
-        self.players = []
-        self.viewoffsetx = self.viewoffsety = 0
-
-    def tick(self):
-        return
-
-    def draw(self):
-        return self.level.draw(self.viewoffsetx, self.viewoffsety, self.viewsize[0] / self.level.tilesize, self.viewsize[1] / self.level.tilesize)
-
-    def scroll_down(self, amt=1):
-        self.viewoffsety += amt
-
-    def scroll_up(self, amt=1):
-        if self.viewoffsety > amt:
-            self.viewoffsety -= amt
-
-    def scroll_left(self, amt=1):
-        self.viewoffsetx += amt
-
-    def scroll_right(self, amt=1):
-        if self.viewoffsetx > amt:
-            self.viewoffsetx -= amt
-
-
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
+class UserQuit(Exception):
+    pass

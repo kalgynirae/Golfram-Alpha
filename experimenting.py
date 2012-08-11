@@ -6,6 +6,7 @@ import pygame
 
 from golfram.logging import logger
 from golfram.ball import GolfBall
+from golfram.game import LevelDemo, UserQuit
 from golfram.geometry import Vector
 from golfram.level import Level, LevelComplete
 from golfram.tile import BoostTile, Tile
@@ -55,24 +56,9 @@ pygame.display.set_caption("Test stuFf")
 while True:
     logger.debug("Generating random level")
     level = RandomLevel(screen)
-    clock = pygame.time.Clock()
-    while True:
-        # Draw
-        level.draw(screen)
-        pygame.display.flip()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                logger.info("Quitting")
-                pygame.quit()
-                sys.exit()
-        # Move objects
-        clock.tick(60)
-        dt = clock.get_time() / 1000.0
-        n = 10
-        try:
-            for i in range(n):
-                level.tick(dt=dt/n)
-        except (IndexError, LevelComplete):
-            break
-        level.center_view_on_entity(level.ball)
-    del level, clock
+    try:
+        LevelDemo(level, screen).run()
+    except UserQuit:
+        logger.info("Quitting")
+        pygame.quit()
+        sys.exit()
