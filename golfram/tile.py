@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+from golfram.events import out_quad, timed, tweened
+
 class Tile(object):
 
     friction = 0.4
@@ -18,10 +20,10 @@ class Tile(object):
     def draw(self):
         return self.texture
 
-    def on_enter(self, object):
+    def on_enter(self, entity, scheduler):
         pass
 
-    def on_exit(self, object):
+    def on_exit(self, entity, scheduler):
         pass
 
 
@@ -41,21 +43,33 @@ class BoostTile(Tile):
 
     def __init__(self, *args):
         self.active = 0
+        self.tweens = {}
 
-    def acceleration_on_object(self, object):
-        friction = Tile.acceleration_on_object(self, object)
+    def acceleration_on_object(self, entity):
+        friction = Tile.acceleration_on_object(self, entity)
         # This calculation is still wrong... the velocity should ramp toward
         # the target velocity
-        velocity_projection = object.velocity.project(self.boost_velocity)
+        velocity_projection = entity.velocity.project(self.boost_velocity)
         dv = self.boost_velocity - velocity_projection
-        object.velocity += dv / 60
+        entity.velocity += dv / 10
         return friction
 
-    def on_enter(self, entity):
+    def on_enter(self, entity, scheduler):
         self.active += 1
+        def set_velocity(v):
+            entity.velocity = v
+        t = tweened(out_quad, start=entity.velocity, end=self.boost_velocity,
+                    duration=0.5, setter=set_velocity)
+        self.tweens[entity] = scheduler.add(t)
 
-    def on_exit(self, entity):
-        self.active -= 1
+    def on_exit(self, entity, scheduler):
+        try:
+            scheduler.remove(self.tweens[entity])
+        except KeyError:
+            pass
+        def deactivate():
+            self.active -= 1
+        scheduler.add(timed(deactivate, 0.2))
 
 
 if __name__ == '__main__':

@@ -115,7 +115,7 @@ class Level(object):
     def set_up(self):
         raise NotImplemented
 
-    def tick(self, dt):
+    def tick(self, dt, scheduler):
         if self.is_complete():
             raise LevelComplete
         for entity, physics in self._entities:
@@ -131,12 +131,12 @@ class Level(object):
                 entity.position += dr
                 # If the entity moved onto a new tile, issue the appropriate
                 # events, and mark the tiles to be redrawn.
-                self._redraw_queue.append(tile)
+                # self._redraw_queue.append(tile)
                 new_tile = self.tile_at_point(entity.position)
                 if new_tile is not tile:
-                    tile.on_exit(entity)
-                    new_tile.on_enter(entity)
-                    self._redraw_queue.append(new_tile)
+                    tile.on_exit(entity, scheduler)
+                    new_tile.on_enter(entity, scheduler)
+                    # self._redraw_queue.append(new_tile)
 
     def tiles_to_px(self, tile_units):
         """Return the pixels equivalent of a dimension in tile units"""
