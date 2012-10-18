@@ -60,5 +60,6 @@ while True:
         LevelDemo(level, screen).run()
     except UserQuit:
         logger.info("Quitting")
+        pygame.display.quit()
         pygame.quit()
         sys.exit()
