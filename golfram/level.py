@@ -41,12 +41,13 @@ class Level(object):
     """
     # Actual levels (subclasses) will redefine these:
     ball_class = GolfBall
+    start_position = Vector(0, 0)
     tilesize = 64
     tiles = None
     width = None
     height = None
 
-    def __init__(self, screen):
+    def __init__(self):
         # The idea here is to keep track of what things we need to redraw,
         # instead of redrawing everything every frame. I'm not sure what
         # to store here, though; the objects themselves is a possibility, or
@@ -60,10 +61,6 @@ class Level(object):
         # This is a list of tuples of the level's entities and whether they
         # need to be physicsed.
         self._entities = []
-        # This is a rectangle that specifies what part of the level is
-        # currently visible.
-        self._view = Rectangle(width=m(screen.get_width()*px),
-                               height=m(screen.get_height()*px))
         # Set up the level
         self.set_up()
         # Calculate width and height
@@ -73,25 +70,10 @@ class Level(object):
     def add_entity(self, entity, physics=True):
         self._entities.append((entity, physics))
 
-    def center_view_on_entity(self, entity):
-        # Try to center the view on the entity
-        self._view.nw = Vector(entity.position.x - (self._view.width / 2),
-                               entity.position.y - (self._view.height / 2))
-        # But shift so there's no non-level space on the screen
-        if (self._view.nw.x + self._view.width) > self.width:
-            self._view.nw.x = self.width - self._view.width
-        if (self._view.nw.y + self._view.height) > self.height:
-            self._view.nw.y = self.height - self._view.height
-        if self._view.nw.x < 0:
-            self._view.nw.x = 0
-        if self._view.nw.y < 0:
-            self._view.nw.y = 0
-
-    def draw(self, surface):
+    def draw(self, surface, view):
         # Draw all tiles for now. Later, only draw tiles from the _redraw_queue
         # Or, only draw tiles that are inside the _view rectangle
-        x_offset, y_offset = (px(self._view.nw.x*m),
-                              px(self._view.nw.y*m))
+        x_offset, y_offset = px(view.nw.x*m), px(view.nw.y*m)
         for row, tiles in enumerate(self.tiles):
             for column, tile in enumerate(tiles):
                 destination = (column * self.tilesize - x_offset,

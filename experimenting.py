@@ -10,6 +10,7 @@ from golfram.game import LevelDemo, UserQuit
 from golfram.geometry import Vector
 from golfram.level import Level, LevelComplete
 from golfram.tile import BoostTile, Tile
+from golfram.view import View
 
 # Load tile textures and make tiles
 class Red(Tile):
@@ -55,9 +56,10 @@ pygame.display.set_caption("Test stuFf")
 # Continuously generate test levels and shoot the ball across them
 while True:
     logger.debug("Generating random level")
-    level = RandomLevel(screen)
+    level = RandomLevel()
+    view = View(screen)
     try:
-        LevelDemo(level, screen).run()
+        LevelDemo(level, screen, view).run()
     except UserQuit:
         logger.info("Quitting")
         pygame.display.quit()
