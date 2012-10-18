@@ -48,7 +48,8 @@ class Level(object):
     def draw(self, surface, view):
         # Draw all tiles for now. Later, only draw tiles from the _redraw_queue
         # Or, only draw tiles that are inside the _view rectangle
-        x_offset, y_offset = px(view.nw.x*m), px(view.nw.y*m)
+        surface.fill(pygame.Color(0, 0, 0, 0))
+        x_offset, y_offset = px(view.rect.nw.x*m), px(view.rect.nw.y*m)
         for row, tiles in enumerate(self.tiles):
             for column, tile in enumerate(tiles):
                 destination = (column * self.tilesize - x_offset,
