@@ -1,30 +1,5 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
-"""
 
-Doctests:
-
-Get a Tile based on its row/column:
-
-    >>> from golfram.tile import Tile
-    >>> t = Tile()
-    >>> level = Level([[t,t,t]] * 3)
-    >>> row, column = 0, 2
-    >>> level.get_tile(row, column) is t
-    True
-
-Level.tile_at_point():
-
-    >>> t1 = Tile()
-    >>> t2 = Tile()
-    >>> t3 = Tile()
-    >>> l = Level([[t1],[t2],[t3]])
-    >>> x = m(l.tilesize * 0.5 * px)
-    >>> y = m(l.tilesize * 2.5 * px)
-    >>> p = Vector(x, y)
-    >>> l.tile_at_point(p) is t3
-    True
-
-"""
 import pygame
 
 from golfram.ball import GolfBall
