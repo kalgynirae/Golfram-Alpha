@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import pygame
 
 from golfram.events import Scheduler
+from golfram.geometry import Vector
 from golfram.level import LevelComplete
 
 class LevelDemo(object):
@@ -13,10 +14,13 @@ class LevelDemo(object):
         self.view = view
 
     def run(self):
+        ball = self.level.spawn_ball()
+        ball.velocity = Vector(2, 1.1)
         clock = pygame.time.Clock()
         scheduler = Scheduler()
         while True:
             # Draw
+            self.view.center_on_entity(self.level.ball)
             self.level.draw(self.screen, self.view)
             pygame.display.flip()
             # Handle events
@@ -30,7 +34,6 @@ class LevelDemo(object):
                 self.level.tick(1 / self.framerate, scheduler)
             except (IndexError, LevelComplete):
                 break
-            self.view.center_on_entity(self.level.ball)
 
 class UserQuit(Exception):
     pass

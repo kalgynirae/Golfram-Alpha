@@ -9,7 +9,7 @@ from golfram.ball import GolfBall
 from golfram.game import LevelDemo, UserQuit
 from golfram.geometry import Vector
 from golfram.level import Level, LevelComplete
-from golfram.tile import BoostTile, Tile
+from golfram.tile import BoostTile, Tile, SlingshotTile
 from golfram.view import View
 
 # Load tile textures and make tiles
@@ -27,22 +27,27 @@ class Boost(BoostTile):
     texture_active = pygame.image.load('sprites/boost_active.png')
     texture_inactive = pygame.image.load('sprites/boost_inactive.png')
 
+class Slingshot(SlingshotTile):
+    texture_active = pygame.image.load('sprites/boost_old.png')
+    texture_inactive = pygame.image.load('sprites/red.png')
+
 class RandomLevel(Level):
 
     def set_up(self):
         # Create a level of 6x6 random tiles
         N = 8
-        choices = [Boost] + [Red] * 2 + [Green] * 2 + [Blue] * 2
+        choices = (2 * [Boost] + 3 * [Red] + 3 * [Green] + 3 * [Blue] +
+                   1 * [Slingshot])
         self.tiles = [[choice(choices)() for x in range(N)] for y in range(N)]
         # This is still wrong. We shouldn't have to define width and height at
         # all. Or at least not in pixels.
         self.width = 64 * N
         self.height = 64 * N
-        # Spawn a new ball
+
+    def spawn_ball(self):
         self.ball = self.ball_class()
         self.add_entity(self.ball)
-        # Start it with some initial velocity, for experimenting!
-        self.ball.velocity = Vector(2, 1.1)
+        return self.ball
 
     def is_complete(self):
         return self.ball.velocity.magnitude < 0.005

@@ -63,7 +63,7 @@ def timed(callback, seconds):
 
 def tweened(tween_function, start, end, duration, setter):
     elapsed = 0
-    while elapsed < duration:
+    while elapsed < duration * 1000:
         elapsed = yield
         new_value = tween_function(start, end, duration * 1000, elapsed)
         setter(new_value)
